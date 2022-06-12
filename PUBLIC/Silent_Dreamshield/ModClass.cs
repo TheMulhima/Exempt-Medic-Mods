@@ -25,15 +25,11 @@ namespace Silent_Dreamshield
 
             if (self.gameObject.name == "Shield" && self.FsmName == "Shield Hit")
             {
-                ModifyFsm(self);
+                FsmStateAction[] origActions = fsm.Fsm.GetState("Slash Anim").Actions;
+                FsmStateAction[] actions = new FsmStateAction[1];
+                actions[0] = origActions[0];
+                fsm.Fsm.GetState("Slash Anim").Actions = actions;
             }
-        }
-        private static void ModifyFsm(PlayMakerFSM fsm)
-        {
-            FsmStateAction[] origActions = fsm.Fsm.GetState("Slash Anim").Actions;
-            FsmStateAction[] actions = new FsmStateAction[1];
-            actions[0] = origActions[0];
-            fsm.Fsm.GetState("Slash Anim").Actions = actions;
         }
     }
 }
