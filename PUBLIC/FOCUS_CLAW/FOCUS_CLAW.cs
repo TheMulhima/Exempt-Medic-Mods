@@ -10,9 +10,9 @@ using GlobalEnums;
 using Satchel;
 using Satchel.Reflected;
 
-namespace WALL_FOCUS
+namespace FOCUS_CLAW
 {
-    public class WALL_FOCUS : Mod
+    public class FOCUS_CLAW : Mod
     {
         public override string GetVersion()
         {
