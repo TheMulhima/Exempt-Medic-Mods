@@ -40,7 +40,21 @@ namespace Always_Furious
                     delay = 0f,
                     everyFrame = false
                 }, 1);
-                self.ChangeFsmTransition("Init", "FINISHED", "Pause");
+                self.AddFsmAction("Idle", new SendEvent()
+                {
+                    eventTarget = new FsmEventTarget()
+                    {
+                        target = FsmEventTarget.EventTarget.GameObject,
+                        gameObject = new FsmOwnerDefault()
+                        {
+                            OwnerOption = OwnerDefaultOption.SpecifyGameObject,
+                            GameObject = self.gameObject
+                        }
+                    },
+                    sendEvent = FsmEvent.GetFsmEvent("HERO DAMAGED"),
+                    delay = 0f,
+                    everyFrame = false
+                });
                 self.ChangeFsmTransition("Recheck", "FINISHED", "Stay Furied");
                 self.ChangeFsmTransition("Activate", "HERO HEALED FULL", "Stay Furied");
                 self.ChangeFsmTransition("Stay Furied", "HERO HEALED FULL", "Stay Furied");
