@@ -25,6 +25,7 @@ namespace NailmastersByNailArt
             if (obj.name == "Sheo Boss" || obj.name == "Oro" || obj.name == "Mato" || obj.name == "Sly Boss")
             {
                 ReflectionHelper.SetField(self, "damage", 0);
+                burst = false;
             }
 
             orig(self, obj, upwardRecursionAmount, burst);
