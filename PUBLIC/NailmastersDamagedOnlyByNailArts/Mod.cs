@@ -1,9 +1,5 @@
 using UnityEngine;
 using Modding;
-using System;
-using System.Collections.Generic;
-using HutongGames.PlayMaker;
-using HutongGames.PlayMaker.Actions;
 
 namespace NailmastersByNailArt
 {
