@@ -26,7 +26,7 @@ namespace MenderbugOptions
 
             BoolOption(
                 "Menderbug Ignores Sign",
-                "Should Menderbug spawning even if the sign is fixed?",
+                "Should Menderbug spawn even if the sign is fixed?",
                 b =>
                 {
                     MenderbugOptions.globalSettings.MenderbugIgnoresSign = b;
