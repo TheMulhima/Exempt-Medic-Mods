@@ -37,7 +37,6 @@ namespace AlwaysFurious
             if (self.gameObject.name == "Charm Effects" && self.FsmName == "Fury")
             {
                 self.AddFsmGlobalTransitions("CHARM EQUIP CHECK", "Check HP");
-                self.FsmGlobalTransitions[0].FsmEvent = FsmEvent.GetFsmEvent("CHARM EQUIP CHECK");
                 self.ChangeFsmTransition("Init", "FINISHED", "Check HP");
                 self.ChangeFsmTransition("Check HP", "CANCEL", "Deactivate");
                 self.ChangeFsmTransition("Activate", "HERO HEALED FULL", "Recheck");
