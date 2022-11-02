@@ -16,7 +16,7 @@ namespace NailmastersPride
     class NailmastersPride : Mod
     {
         private static MethodInfo origHeroUpdate = typeof(HeroController).GetMethod("orig_Update", BindingFlags.NonPublic | BindingFlags.Instance);
-        
+
         private ILHook ilOrigHeroUpdate;
 
         public override string GetVersion() => "1.0";
@@ -25,12 +25,37 @@ namespace NailmastersPride
             Log("Initializing");
 
             On.HeroController.CanAttack += OnCanAttack;
-            On.PlayMakerFSM.OnEnable += OnFSMEnable;
-            ilOrigHeroUpdate = new ILHook(origHeroUpdate, NailmasterPrideHook);
             On.HeroController.CanNailCharge += OnCanNailCharge;
             On.HeroController.CanNailArt += OnCanNailArt;
+            ilOrigHeroUpdate = new ILHook(origHeroUpdate, NailmasterPrideHook);
+            On.HutongGames.PlayMaker.Actions.BoolNoneTrue.OnEnter += OnBoolNoneTrueAction;
+            On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += OnPDBoolTestAction;
+
 
             Log("Initialized");
+        }
+        private void OnBoolNoneTrueAction(On.HutongGames.PlayMaker.Actions.BoolNoneTrue.orig_OnEnter orig, BoolNoneTrue self)
+        {
+            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Cyclone?" && PlayerData.instance.equippedCharm_26)
+            {
+                self.sendEvent = FsmEvent.GetFsmEvent("FINISHED");
+            }
+
+            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has G Slash?" && PlayerData.instance.equippedCharm_26)
+            {
+                self.sendEvent = FsmEvent.GetFsmEvent("FINISHED");
+            }
+
+            orig(self);
+        }
+        private void OnPDBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
+        {
+            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Dash?" && PlayerData.instance.equippedCharm_26)
+            {
+                self.isFalse = FsmEvent.GetFsmEvent("FINISHED");
+            }
+
+            orig(self);
         }
 
         // Prevents attacking while NMG is equipped
@@ -41,66 +66,6 @@ namespace NailmastersPride
                 return false;
             }
             return orig(self);
-        }
-
-        //Allows Nail Arts to be used by pressing Attack and has NMG effectively ignore Nail Art requirements
-        private void OnFSMEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
-        {
-            orig(self);
-            if (self.gameObject.name == "Knight" && self.FsmName == "Nail Arts")
-            {
-                self.AddFsmState("Dash NMG Check");
-                self.AddFsmState("Cyclone NMG Check");
-                self.AddFsmState("Great NMG Check");
-
-                self.ChangeFsmTransition("Can Nail Art?", "DASH CHECK", "Dash NMG Check");
-                self.ChangeFsmTransition("Move Choice", "CYCLONE", "Cyclone NMG Check");
-                self.ChangeFsmTransition("Move Choice", "GREAT SLASH", "Great NMG Check");
-
-                self.AddFsmTransition("Dash NMG Check", "EQUIPPED", "Dash Slash Ready");
-                self.AddFsmTransition("Dash NMG Check", "NOT EQUIPPED", "Has Dash?");
-                self.AddFsmAction("Dash NMG Check", new PlayerDataBoolTest()
-                {
-                    gameObject = new FsmOwnerDefault()
-                    {
-                        OwnerOption = OwnerDefaultOption.SpecifyGameObject,
-                        GameObject = GameManager.instance.gameObject
-                    },
-                    boolName = "equippedCharm_26",
-                    isTrue = FsmEvent.GetFsmEvent("EQUIPPED"),
-                    isFalse = FsmEvent.GetFsmEvent("NOT EQUIPPED")
-                });
-
-                self.AddFsmTransition("Cyclone NMG Check", "EQUIPPED", "Flash");
-                self.AddFsmTransition("Cyclone NMG Check", "NOT EQUIPPED", "Has Cyclone?");
-                self.AddFsmAction("Cyclone NMG Check", new PlayerDataBoolTest()
-                {
-                    gameObject = new FsmOwnerDefault()
-                    {
-                        OwnerOption = OwnerDefaultOption.SpecifyGameObject,
-                        GameObject = GameManager.instance.gameObject
-                    },
-                    boolName = "equippedCharm_26",
-                    isTrue = FsmEvent.GetFsmEvent("EQUIPPED"),
-                    isFalse = FsmEvent.GetFsmEvent("NOT EQUIPPED")
-                });
-
-                self.AddFsmTransition("Great NMG Check", "EQUIPPED", "Flash 2");
-                self.AddFsmTransition("Great NMG Check", "NOT EQUIPPED", "Has G Slash?");
-                self.AddFsmAction("Great NMG Check", new PlayerDataBoolTest()
-                {
-                    gameObject = new FsmOwnerDefault()
-                    {
-                        OwnerOption = OwnerDefaultOption.SpecifyGameObject,
-                        GameObject = GameManager.instance.gameObject
-                    },
-                    boolName = "equippedCharm_26",
-                    isTrue = FsmEvent.GetFsmEvent("EQUIPPED"),
-                    isFalse = FsmEvent.GetFsmEvent("NOT EQUIPPED")
-                });
-
-                self.GetFsmAction<ListenForAttack>("Inactive", 0).wasPressed = FsmEvent.GetFsmEvent("BUTTON UP");
-            }
         }
 
         //Prevents CanNailArt from resetting nailChargeTimer when NMG is equipped
@@ -119,7 +84,7 @@ namespace NailmastersPride
         }
 
         //Lets you charge Nail Arts with NMG equipped even if you don't know any
-    private bool OnCanNailCharge(On.HeroController.orig_CanNailCharge orig, HeroController self)
+        private bool OnCanNailCharge(On.HeroController.orig_CanNailCharge orig, HeroController self)
         {
             if (PlayerData.instance.equippedCharm_26 && !HeroController.instance.cState.attacking && !HeroController.instance.controlReqlinquished && !HeroController.instance.cState.recoiling && !HeroController.instance.cState.recoilingLeft && !HeroController.instance.cState.recoilingRight)
             {
