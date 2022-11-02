@@ -1,14 +1,12 @@
-﻿using Modding;
-using System;
-using System.Collections.Generic;
+using Modding;
 using UnityEngine;
-using HutongGames.PlayMaker;
+using System;
 using HutongGames.PlayMaker.Actions;
+using SFCore.Utils;
 
-
-namespace Silent_Dreamshield
+namespace SilentDreamshield
 {
-    class Silent_Dreamshield : Mod
+    public class SilentDreamshield : Mod
     {
         public override string GetVersion() => "1.0";
         public override void Initialize()
@@ -16,19 +14,17 @@ namespace Silent_Dreamshield
             Log("Initializing");
 
             On.PlayMakerFSM.OnEnable += OnFsmEnable;
-            
+
             Log("Initialized");
         }
-        private static void OnFsmEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+
+        private void OnFsmEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
         {
             orig(self);
 
             if (self.gameObject.name == "Shield" && self.FsmName == "Shield Hit")
             {
-                FsmStateAction[] origActions = self.Fsm.GetState("Slash Anim").Actions;
-                FsmStateAction[] actions = new FsmStateAction[1];
-                actions[0] = origActions[0];
-                self.Fsm.GetState("Slash Anim").Actions = actions;
+                self.GetFsmAction<AudioPlayerOneShotSingle>("Slash Anim", 1).Enabled = false;
             }
         }
     }
