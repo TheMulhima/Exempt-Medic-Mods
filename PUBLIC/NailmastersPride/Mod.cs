@@ -30,32 +30,48 @@ namespace NailmastersPride
             ilOrigHeroUpdate = new ILHook(origHeroUpdate, NailmasterPrideHook);
             On.HutongGames.PlayMaker.Actions.BoolNoneTrue.OnEnter += OnBoolNoneTrueAction;
             On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.OnEnter += OnPDBoolTestAction;
+            On.HutongGames.PlayMaker.Actions.BoolTest.OnEnter += OnBoolTestAction;
 
 
             Log("Initialized");
         }
         private void OnBoolNoneTrueAction(On.HutongGames.PlayMaker.Actions.BoolNoneTrue.orig_OnEnter orig, BoolNoneTrue self)
         {
-            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Cyclone?" && PlayerData.instance.equippedCharm_26)
+            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Cyclone?")
             {
-                self.sendEvent = FsmEvent.GetFsmEvent("FINISHED");
+                self.sendEvent = PlayerData.instance.equippedCharm_26 ? FsmEvent.GetFsmEvent("FINISHED") : FsmEvent.GetFsmEvent("CANCEL");
             }
 
-            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has G Slash?" && PlayerData.instance.equippedCharm_26)
+            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has G Slash?")
             {
-                self.sendEvent = FsmEvent.GetFsmEvent("FINISHED");
+                self.sendEvent = PlayerData.instance.equippedCharm_26 ? FsmEvent.GetFsmEvent("FINISHED") : FsmEvent.GetFsmEvent("CANCEL");
             }
 
             orig(self);
         }
         private void OnPDBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
         {
-            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Dash?" && PlayerData.instance.equippedCharm_26)
+            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Dash?")
             {
-                self.isFalse = FsmEvent.GetFsmEvent("FINISHED");
+                self.isFalse = PlayerData.instance.equippedCharm_26 ? FsmEvent.GetFsmEvent("FINISHED") : FsmEvent.GetFsmEvent("CANCEL");
             }
 
             orig(self);
+        }
+        private void OnBoolTestAction(On.HutongGames.PlayMaker.Actions.BoolTest.orig_OnEnter orig, BoolTest self)
+        {
+            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Cyclone?")
+            {
+                self.isFalse = PlayerData.instance.equippedCharm_26 ? FsmEvent.GetFsmEvent("FINISHED") : FsmEvent.GetFsmEvent("GREAT SLASH");
+            }
+
+            if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has G Slash?")
+            {
+                self.isFalse = PlayerData.instance.equippedCharm_26 ? FsmEvent.GetFsmEvent("FINISHED") : FsmEvent.GetFsmEvent("CYCLONE");
+            }
+
+            orig(self);
+
         }
 
         // Prevents attacking while NMG is equipped
