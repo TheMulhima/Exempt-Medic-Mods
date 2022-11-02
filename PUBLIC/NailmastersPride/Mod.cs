@@ -34,6 +34,8 @@ namespace NailmastersPride
 
             Log("Initialized");
         }
+        
+        //Makes all Nail Arts work with NMG equipped.
         private void OnBoolNoneTrueAction(On.HutongGames.PlayMaker.Actions.BoolNoneTrue.orig_OnEnter orig, BoolNoneTrue self)
         {
             if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Cyclone?")
@@ -48,6 +50,7 @@ namespace NailmastersPride
 
             orig(self);
         }
+        
         private void OnPDBoolTestAction(On.HutongGames.PlayMaker.Actions.PlayerDataBoolTest.orig_OnEnter orig, PlayerDataBoolTest self)
         {
             if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Dash?")
@@ -57,6 +60,7 @@ namespace NailmastersPride
 
             orig(self);
         }
+        
         private void OnBoolTestAction(On.HutongGames.PlayMaker.Actions.BoolTest.orig_OnEnter orig, BoolTest self)
         {
             if (self.Fsm.FsmComponent.gameObject.name == "Knight" && self.Fsm.FsmComponent.FsmName == "Nail Arts" && self.Fsm.FsmComponent.ActiveStateName == "Has Cyclone?")
