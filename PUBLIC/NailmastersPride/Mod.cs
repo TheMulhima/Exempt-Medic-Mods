@@ -4,7 +4,6 @@ using System.Reflection;
 using Modding;
 using HutongGames.PlayMaker.Actions;
 using HutongGames.PlayMaker;
-using SFCore.Utils;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using MonoMod.RuntimeDetour;
