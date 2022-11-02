@@ -1,14 +1,11 @@
-﻿using Modding;
-using System;
-using System.Collections.Generic;
+using Modding;
 using UnityEngine;
-using HutongGames.PlayMaker;
-using HutongGames.PlayMaker.Actions;
+using System;
+using SFCore.Utils;
 
-
-namespace Faster_Hiveblood
+namespace FasterHiveblood
 {
-    class Faster_Hiveblood : Mod
+    public class FasterHiveblood : Mod
     {
         public override string GetVersion() => "1.0";
         public override void Initialize()
@@ -16,21 +13,18 @@ namespace Faster_Hiveblood
             Log("Initializing");
 
             On.PlayMakerFSM.OnEnable += OnFsmEnable;
-            
+
             Log("Initialized");
         }
-        private static void OnFsmEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
+
+        private void OnFsmEnable(On.PlayMakerFSM.orig_OnEnable orig, PlayMakerFSM self)
         {
             orig(self);
 
             if (self.gameObject.name == "Health" && self.FsmName == "Hive Health Regen")
             {
-                ModifyFsm(self);
+                self.GetFsmFloatVariable("Recover Time").Value = 2.5f;
             }
-        }
-        private static void ModifyFsm(PlayMakerFSM fsm)
-        {
-            fsm.Fsm.Variables.FloatVariables[1].Value = 2.5f;
         }
     }
 }
