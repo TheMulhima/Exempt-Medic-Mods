@@ -2,5 +2,5 @@ My personal attempt to port the Charm Overhaul mod to 1.5. Created following the
 Does not implement Avaricious Swarm, Sorcerer Stone, the damage-dealing part of Kinematic Shell, or any of the "Not yet implemented" section except for the Flukenest damage and cost increase.
 
 Known Issues:
-Hiveshell does not visually update the Baldur Shell HUD icon, though it updates under the hood.
+Hiveshell does not visually update the Baldur Shell HUD icon.
 Gilded Hunger + Homeward Swarm can cause the SOUL meter to display incorrectly after casting a Spell that kills an enemy.
