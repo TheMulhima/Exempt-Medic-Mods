@@ -2,6 +2,8 @@ using UnityEngine;
 using System;
 using System.Reflection;
 using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
 using Modding;
 using HutongGames.PlayMaker.Actions;
 using HutongGames.PlayMaker;
@@ -24,6 +26,10 @@ namespace CharmOverhaul
         private bool shield = false;
 
         private bool kinematic = false;
+
+        private float avariciousSwarmTimer;
+
+        private AudioClip geoCollect;
 
         public override string GetVersion() => Assembly.GetExecutingAssembly().GetName().Version.ToString();
         public override void Initialize()
@@ -64,6 +70,9 @@ namespace CharmOverhaul
 
             ILHeroController.orig_CharmUpdate +=  CharmUpdateHook;
 
+            ModHooks.HeroUpdateHook += AvariciousSwarm;
+
+            geoCollect = Resources.FindObjectsOfTypeAll<AudioClip>().First(c => c.name == "geo_small_collect_1");
             Log("Initialized");
         }
 
@@ -593,6 +602,33 @@ namespace CharmOverhaul
         {
             yield return new WaitForSeconds(0.5f);
             kinematic = false;
+        }
+
+        private List<MapZone> dreamZones = new List<MapZone>()
+        {
+            MapZone.DREAM_WORLD, MapZone.ROYAL_QUARTER, MapZone.WHITE_PALACE, MapZone.FINAL_BOSS, MapZone.GODSEEKER_WASTE, MapZone.GODS_GLORY
+        };
+
+        public void AvariciousSwarm()
+        {
+            if (PlayerDataAccess.equippedCharm_1 && PlayerDataAccess.equippedCharm_24)
+            {
+                //dont do it if in dream scene and not have dream wielder
+                if (!(dreamZones.Contains(PlayerDataAccess.mapZone) && !PlayerDataAccess.equippedCharm_30))
+                {
+                    avariciousSwarmTimer += Time.deltaTime;
+
+                    float procTime = 10f * (PlayerDataAccess.equippedCharm_2 ? 0.8f : 1f);
+
+                    if (avariciousSwarmTimer > procTime)
+                    {
+                        avariciousSwarmTimer = 0f;
+
+                        HeroController.instance.AddGeo((int) (UnityEngine.Random.Range(PlayerDataAccess.equippedCharm_10 ? 5: 1, 25) * (PlayerDataAccess.equippedCharm_10 ? 1.25f : 1f)));
+                        HeroControllerR.audioSource.PlayOneShot(geoCollect);
+                    }
+                }
+            }
         }
     }
 }
