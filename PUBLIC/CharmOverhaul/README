@@ -1,5 +1,5 @@
 My personal attempt to port the Charm Overhaul mod to 1.5. Created following the information found at this steam discussion post: https://steamcommunity.com/app/367520/discussions/0/1732089092462513717/
-Does not implement Avaricious Swarm, Sorcerer Stone, the damage-dealing part of Kinematic Shell, or any of the "Not yet implemented" section except for the Flukenest damage and cost increase.
+Does not implement Avaricious Swarm, Sorcerer Stone, or any of the "Not yet implemented" section except for the Flukenest damage and cost increase.
 
 Known Issues:
 Hiveshell does not visually update the Baldur Shell HUD icon.
