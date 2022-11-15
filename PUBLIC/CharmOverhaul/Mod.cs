@@ -14,6 +14,7 @@ using HKMirror;
 using HKMirror.Hooks.ILHooks;
 using HKMirror.Hooks.OnHooks;
 using HKMirror.Reflection.InstanceClasses;
+using HKMirror.Reflection.SingletonClasses;
 using HKMirror.Reflection;
 
 namespace CharmOverhaul
@@ -552,6 +553,26 @@ namespace CharmOverhaul
                     },
                     intName = "blockerHits",
                     amount = 1
+                });
+
+                self.AddMethod("Restore", () =>
+                {
+                    var blockerHUD = self.GetAction<Tk2dPlayAnimation>("HUD 1", 0).gameObject.GameObject.Value;
+                    if (PlayerDataAccess.blockerHits > 0)
+                    {
+                        if (PlayerDataAccess.blockerHits < 4)
+                        {
+                            blockerHUD.GetComponent<tk2dSpriteAnimator>().Play($"UI Break {4 - PlayerDataAccess.blockerHits}");
+                            self.gameObject.Find("Hit Crack").SetActive(true);
+                        }
+                        else if (PlayerDataAccess.blockerHits == 4)
+                        {
+                            blockerHUD.GetComponent<tk2dSpriteAnimator>().Play($"UI Appear");
+                            self.gameObject.Find("Hit Crack").SetActive(false);
+                        }
+                        self.gameObject.Find("Pusher").SetActive(false);
+                        HeroControllerR.audioSource.PlayOneShot(HeroController.instance.blockerImpact, 1f);
+                    }
                 });
             }
         }
