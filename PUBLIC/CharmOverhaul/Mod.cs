@@ -18,6 +18,8 @@ namespace CharmOverhaul
 
         private bool shield = false;
 
+        private bool kinematic = false;
+
         private static MethodInfo origCharmUpdate = typeof(HeroController).GetMethod("orig_CharmUpdate", BindingFlags.Public | BindingFlags.Instance);
 
         private ILHook ilOrigCharmUpdate;
@@ -204,9 +206,15 @@ namespace CharmOverhaul
         private void OnHCTakeDamage(On.HeroController.orig_TakeDamage orig, HeroController self, GameObject go, CollisionSide damageSide, int damageAmount, int hazardType)
         {
             //Stalwart Shell + Defender's Crest Damage
-            if (PlayerData.instance.GetBool("equippedCharm_4") && PlayerData.instance.GetBool("equippedCharm_10") && self.gameObject.GetComponent<Rigidbody2D>().velocity.y <= 0 - self.MAX_FALL_VELOCITY)
+            if (PlayerData.instance.GetBool("equippedCharm_4") && PlayerData.instance.GetBool("equippedCharm_10") && self.gameObject.GetComponent<Rigidbody2D>().velocity.y <= 0 - self.MAX_FALL_VELOCITY && !self.cState.spellQuake && !self.cState.shadowDashing)
             {
                 damageAmount = 0;
+                if (!kinematic)
+                {
+                    go.GetComponent<HealthManager>().ApplyExtraDamage(20);
+                    kinematic = true;
+                    GameManager.instance.StartCoroutine(Kinematic());
+                }
             }
 
             //Joni's Blessing + Carefree Melody
@@ -290,13 +298,16 @@ namespace CharmOverhaul
             }            
         }
 
-        //Makes Steady Body prevent hard landings
         private bool OnShouldHardLand(On.HeroController.orig_ShouldHardLand orig, HeroController self, Collision2D collision)
         {
+            //Makes Steady Body prevent hard landings
             if (PlayerData.instance.GetBool("equippedCharm_14"))
             {
                 return false;
             }
+
+            //Failsafe to reset Kinematic Shell bool in case of StopAllCoroutines
+            kinematic = false;
 
             return orig(self, collision);
         }
@@ -551,6 +562,12 @@ namespace CharmOverhaul
             PlayerData.instance.SetInt("charmCost_34", 3);
             PlayerData.instance.SetInt("charmCost_11", 2);
             PlayerData.instance.SetInt("charmCost_40", 2);
+        }
+
+        private IEnumerator Kinematic()
+        {
+            yield return new WaitForSeconds(0.5f);
+            kinematic = false;
         }
     }
 }
