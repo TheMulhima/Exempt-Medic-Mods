@@ -153,6 +153,8 @@ namespace CharmOverhaul
                     self.Fsm.FsmComponent.GetFsmIntVariable("MP Cost").Value = (PlayerData.instance.GetBool("equippedCharm_33") && PlayerData.instance.GetBool("equippedCharm_36") && PlayerData.instance.GetInt("royalCharmState") == 4 && self.Fsm.FsmComponent.GetFsmIntVariable("Spell Level").Value == 2) ? 22 : PlayerData.instance.GetBool("equippedCharm_33") ? 24 : 33;
                 }
             }
+
+            //Hiveblood + Grubsong MP Amount
             else if (self.Fsm.FsmComponent.FsmName == "Hive Health Regen" && self.Fsm.FsmComponent.gameObject.name == "Health")
             {
                 if (self.Fsm.FsmComponent.ActiveStateName == "SOUL 1")
@@ -205,7 +207,7 @@ namespace CharmOverhaul
 
         private void OnHCTakeDamage(On.HeroController.orig_TakeDamage orig, HeroController self, GameObject go, CollisionSide damageSide, int damageAmount, int hazardType)
         {
-            //Stalwart Shell + Defender's Crest Damage
+            //Stalwart Shell + Defender's Crest
             if (PlayerData.instance.GetBool("equippedCharm_4") && PlayerData.instance.GetBool("equippedCharm_10") && self.gameObject.GetComponent<Rigidbody2D>().velocity.y <= 0 - self.MAX_FALL_VELOCITY && !self.cState.spellQuake && !self.cState.shadowDashing)
             {
                 damageAmount = 0;
@@ -295,7 +297,7 @@ namespace CharmOverhaul
                 PlayerData.instance.SetInt("maxHealth", 1);
                 PlayerData.instance.SetInt("health", 1);
                 HeroController.instance.gameObject.transform.Find("Charm Effects").gameObject.LocateMyFSM("Fury").SendEvent("HERO DAMAGED");
-            }            
+            }
         }
 
         private bool OnShouldHardLand(On.HeroController.orig_ShouldHardLand orig, HeroController self, Collision2D collision)
