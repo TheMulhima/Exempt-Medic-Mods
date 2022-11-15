@@ -203,6 +203,12 @@ namespace CharmOverhaul
 
         private void OnHCTakeDamage(On.HeroController.orig_TakeDamage orig, HeroController self, GameObject go, CollisionSide damageSide, int damageAmount, int hazardType)
         {
+            //Stalwart Shell + Defender's Crest Damage
+            if (PlayerData.instance.GetBool("equippedCharm_4") && PlayerData.instance.GetBool("equippedCharm_10") && self.gameObject.GetComponent<Rigidbody2D>().velocity.y <= 0 - self.MAX_FALL_VELOCITY)
+            {
+                damageAmount = 0;
+            }
+
             //Joni's Blessing + Carefree Melody
             if (ReflectionHelper.GetField<HeroController, int>(self, "hitsSinceShielded") != 0 && hazardType == 1 && PlayerData.instance.GetBool("equippedCharm_27") && HeroController.instance.carefreeShieldEquipped)
             {
